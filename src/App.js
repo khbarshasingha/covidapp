@@ -1,24 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from "react";
+import { Details } from "./Components/Details";
+import { Row } from "react-bootstrap";
+const BASE_URL = "https://api.covid19india.org/raw_data3.json";
 
 function App() {
+  const [covidData, setCovidData] = useState([]);
+  useEffect(() => {
+    const fetchChar = async () => {
+      const response = await fetch(BASE_URL);
+      response.json().then(response => setCovidData(response.raw_data));
+    };
+    fetchChar();
+  }, []);
+
+  console.log(covidData);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Row>
+      {covidData.map(data => (
+        <Details key={data.entryid} cs={data.currentstatus} />
+      ))}
+    </Row>
   );
 }
 
